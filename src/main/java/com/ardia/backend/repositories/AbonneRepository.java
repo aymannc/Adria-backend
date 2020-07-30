@@ -6,4 +6,5 @@ import org.springframework.data.rest.core.annotation.RepositoryRestResource;
 
 @RepositoryRestResource
 public interface AbonneRepository extends JpaRepository<Abonne, Long> {
+    public Abonne findByUsername(String username);
 }

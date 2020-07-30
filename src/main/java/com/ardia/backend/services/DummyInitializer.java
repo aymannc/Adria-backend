@@ -13,6 +13,8 @@ import java.util.List;
 @Service
 public class DummyInitializer implements Initializer {
     @Autowired
+    AccountService accountService;
+    @Autowired
     AbonneRepository abonneRepository;
     @Autowired
     CompteRepository compteRepository;
@@ -25,13 +27,13 @@ public class DummyInitializer implements Initializer {
 
     @Override
     public void initAllData() {
-        Abonne abonne1 = abonneRepository.save(
+        Abonne abonne1 = accountService.saveUser(
                 new Abonne(null, "anc", "1234", "Nait", "Ayman", null,
                         null));
-        Abonne abonne2 = abonneRepository.save(
+        Abonne abonne2 = accountService.saveUser(
                 new Abonne(null, "med", "1234", "ouftou", "mohmad", null,
                         null));
-        Abonne abonne3 = abonneRepository.save(
+        Abonne abonne3 = accountService.saveUser(
                 new Abonne(null, "user", "1234", "Chtaiba", "kk", null,
                         null));
 
@@ -48,7 +50,7 @@ public class DummyInitializer implements Initializer {
         );
         beneficiairesList = beneficiaireRepository.saveAll(beneficiairesList);
         abonne2.setBeneficiaires(beneficiairesList);
-        abonneRepository.save(abonne2);
+        accountService.saveUser(abonne2);
 
         VirmentMultiple virmentMultiple = new VirmentMultiple(1, null);
         virmentMultiple.setAbonne(abonne2);
@@ -60,5 +62,9 @@ public class DummyInitializer implements Initializer {
         VirmentMultipleBeneficiaire vmb = new VirmentMultipleBeneficiaire(null, new BigDecimal(1000),
                 beneficiairesList.get(0), virmentMultiple);
         virmentMultipleBeneficiaireRepository.save(vmb);
+        abonneRepository.findAll().forEach(user->{
+            System.out.println("username : "+user.getUsername());
+            System.out.println("password : "+user.getPassword());
+        });
     }
 }
