@@ -18,22 +18,35 @@ import java.util.Collection;
 public class JWTAuthorizationFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
-        if(request.getMethod().equals("OPTIONS")){
+        System.out.println(request.getMethod());
+//        response.addHeader("Access-Control-Allow-Origin", "http://localhost:3000");
+//        response.addHeader("Access-Control-Allow-Headers",
+//                "Origin, Accept, X-Requested-With, Content-Type, Access-Control-Request-Method," +
+//                        " Access-Control-Request-Headers, authorization");
+//        response.addHeader("Access-Control-Expose-Headers", "Access-Control-Allow-Origin," +
+//                " Access-Control-Allow-Credentials, authorization");
+        response.setHeader("Access-Control-Allow-Origin", "*");
+        response.setHeader("Access-Control-Allow-Credentials", "true");
+        response.setHeader("Access-Control-Max-Age", "1800");
+        response.setHeader("Access-Control-Allow-Headers", "content-type");
+        response.setHeader("Access-Control-Allow-Methods","PUT, POST, GET, DELETE, PATCH, OPTIONS");
+        if (request.getMethod().equals("OPTIONS")) {
             response.setStatus(HttpServletResponse.SC_OK);
-        }else {
+        } else {
             String jwtToken = request.getHeader(SecurityConstants.HEADER_STRING);
-            if(jwtToken==null || !jwtToken.startsWith(SecurityConstants.TOKEN_PREFIX)){
-                filterChain.doFilter(request,response);return;
+            if (jwtToken == null || !jwtToken.startsWith(SecurityConstants.TOKEN_PREFIX)) {
+                filterChain.doFilter(request, response);
+                return;
             }
             Claims claims = Jwts.parser()
                     .setSigningKey(SecurityConstants.SECRET)
-                    .parseClaimsJws(jwtToken.replace(SecurityConstants.TOKEN_PREFIX,""))
+                    .parseClaimsJws(jwtToken.replace(SecurityConstants.TOKEN_PREFIX, ""))
                     .getBody();
             String username = claims.getSubject();
             Collection<GrantedAuthority> authorities = new ArrayList<GrantedAuthority>();
-            UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(username,null,authorities);
+            UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(username, null, authorities);
             SecurityContextHolder.getContext().setAuthentication(authenticationToken);
-            filterChain.doFilter(request,response);
+            filterChain.doFilter(request, response);
         }
     }
 }
