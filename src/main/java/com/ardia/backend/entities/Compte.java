@@ -6,6 +6,7 @@ import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.math.BigDecimal;
+import java.util.Collection;
 
 @Entity
 @Data
@@ -20,4 +21,7 @@ public class Compte {
     private BigDecimal soldeComptable;
     @ManyToOne
     private Abonne abonne;
+
+    @OneToMany(mappedBy = "compte")
+    private Collection<Virment> virments;
 }

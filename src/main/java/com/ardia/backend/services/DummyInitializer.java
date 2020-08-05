@@ -38,10 +38,11 @@ public class DummyInitializer implements Initializer {
                         null));
 
         compteRepository.save(
-                new Compte(null, "1", "Mr", new BigDecimal("1000"), abonne1));
+                new Compte(null, "1", "Mr", new BigDecimal("1000"), abonne1,null));
+        Compte compte = new Compte(null, "2", "Mr", new BigDecimal("10000"), abonne2,null);
         compteRepository.save(
-                new Compte(null, "2", "Mr", new BigDecimal("10000"), abonne1));
-        compteRepository.save(new Compte(null, "3", "Mr", new BigDecimal("-10"), abonne1));
+                compte);
+        compteRepository.save(new Compte(null, "3", "Mr", new BigDecimal("-10"), abonne3,null));
 
         List<Beneficiaire> beneficiairesList = new ArrayList<>();
 
@@ -54,6 +55,7 @@ public class DummyInitializer implements Initializer {
 
         VirmentMultiple virmentMultiple = new VirmentMultiple(1, null);
         virmentMultiple.setAbonne(abonne2);
+        virmentMultiple.setCompte(compte);
         virmentMultiple.setDateExcecution(new Date());
         virmentMultiple.setMontant(new BigDecimal(1000));
         virmentMultiple.setMotif("Motif");
