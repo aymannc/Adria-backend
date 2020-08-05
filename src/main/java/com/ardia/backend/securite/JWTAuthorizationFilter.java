@@ -18,18 +18,14 @@ import java.util.Collection;
 public class JWTAuthorizationFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
-        System.out.println(request.getMethod());
-//        response.addHeader("Access-Control-Allow-Origin", "http://localhost:3000");
-//        response.addHeader("Access-Control-Allow-Headers",
-//                "Origin, Accept, X-Requested-With, Content-Type, Access-Control-Request-Method," +
-//                        " Access-Control-Request-Headers, authorization");
-//        response.addHeader("Access-Control-Expose-Headers", "Access-Control-Allow-Origin," +
-//                " Access-Control-Allow-Credentials, authorization");
-        response.setHeader("Access-Control-Allow-Origin", "*");
-        response.setHeader("Access-Control-Allow-Credentials", "true");
-        response.setHeader("Access-Control-Max-Age", "1800");
-        response.setHeader("Access-Control-Allow-Headers", "content-type");
-        response.setHeader("Access-Control-Allow-Methods","PUT, POST, GET, DELETE, PATCH, OPTIONS");
+
+        response.addHeader("Access-Control-Allow-Origin", "http://localhost:3000/");
+        response.addHeader("Access-Control-Allow-Headers",
+                "Origin, Accept, X-Requested-With, Content-Type, Access-Control-Request-Method," +
+                        " Access-Control-Request-Headers, authorization");
+        response.addHeader("Access-Control-Expose-Headers", "Access-Control-Allow-Origin," +
+                " Access-Control-Allow-Credentials, authorization");
+
         if (request.getMethod().equals("OPTIONS")) {
             response.setStatus(HttpServletResponse.SC_OK);
         } else {

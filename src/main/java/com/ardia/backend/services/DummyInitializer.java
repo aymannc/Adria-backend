@@ -38,11 +38,11 @@ public class DummyInitializer implements Initializer {
                         null));
 
         compteRepository.save(
-                new Compte(null, "1", "Mr", new BigDecimal("1000"), abonne1,null));
-        Compte compte = new Compte(null, "2", "Mr", new BigDecimal("10000"), abonne2,null);
+                new Compte(null, "123342", "Mr", new BigDecimal("1000"), abonne1,null));
+        Compte compte = new Compte(null, "435632", "Mr", new BigDecimal("10000"), abonne2,null);
         compteRepository.save(
                 compte);
-        compteRepository.save(new Compte(null, "3", "Mr", new BigDecimal("-10"), abonne3,null));
+        compteRepository.save(new Compte(null, "3980874", "Mr", new BigDecimal("-10"), abonne3,null));
 
         List<Beneficiaire> beneficiairesList = new ArrayList<>();
 
