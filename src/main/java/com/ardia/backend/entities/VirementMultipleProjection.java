@@ -19,6 +19,4 @@ public interface VirementMultipleProjection {
     public Compte getCompte();
     public Abonne getAbonne();
     public Collection<VirmentMultipleBeneficiaire> getVirmentMultipleBeneficiaires();
-    @Value("#{target.virmentMultipleBeneficiaires.getBeneficiaire()}")
-    public Beneficiaire getVirmentMultipleBeneficiairesBeneficiaire();
 }
