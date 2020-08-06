@@ -9,4 +9,6 @@ import org.springframework.web.bind.annotation.CrossOrigin;
 @CrossOrigin("*")
 @RepositoryRestResource
 public interface CompteRepository extends JpaRepository<Compte, Long> {
+
+    Compte findByNumeroCompte(String numeroCompte);
 }

@@ -38,11 +38,11 @@ public class DummyInitializer implements Initializer {
                         null));
 
         compteRepository.save(
-                new Compte(null, "123342", "Mr", new BigDecimal("1000"), abonne1,null));
-        Compte compte = new Compte(null, "435632", "Mr", new BigDecimal("10000"), abonne2,null);
+                new Compte(null, "123342", "Mr", new BigDecimal("1000"), abonne1, null));
+        Compte compte = new Compte(null, "435632", "Mr", new BigDecimal("10000"), abonne1, null);
         compteRepository.save(
                 compte);
-        compteRepository.save(new Compte(null, "3980874", "Mr", new BigDecimal("-10"), abonne3,null));
+        compteRepository.save(new Compte(null, "3980874", "Mr", new BigDecimal("-10"), abonne3, null));
 
         List<Beneficiaire> beneficiairesList = new ArrayList<>();
 
@@ -64,9 +64,9 @@ public class DummyInitializer implements Initializer {
         VirmentMultipleBeneficiaire vmb = new VirmentMultipleBeneficiaire(null, new BigDecimal(1000),
                 beneficiairesList.get(0), virmentMultiple);
         virmentMultipleBeneficiaireRepository.save(vmb);
-        abonneRepository.findAll().forEach(user->{
-            System.out.println("username : "+user.getUsername());
-            System.out.println("password : "+user.getPassword());
+        abonneRepository.findAll().forEach(user -> {
+            System.out.println("username : " + user.getUsername());
+            System.out.println("password : " + user.getPassword());
         });
     }
 }
