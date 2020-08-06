@@ -18,5 +18,6 @@ public interface VirementMultipleProjection {
     public String getMotif();
     public Compte getCompte();
     public Abonne getAbonne();
+    public Integer getNombreBeneficiaires();
     public Collection<VirmentMultipleBeneficiaire> getVirmentMultipleBeneficiaires();
 }

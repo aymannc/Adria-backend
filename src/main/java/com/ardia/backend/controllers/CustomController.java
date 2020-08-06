@@ -63,9 +63,7 @@ public class CustomController {
             montantMaxFilter = virment.getMontant().compareTo(filtringForm.getMontantMax())==-1 || virment.getMontant().compareTo(filtringForm.getMontantMax())==-0;
             montantMinFilter = virment.getMontant().compareTo(filtringForm.getMontantMin())==1 || virment.getMontant().compareTo(filtringForm.getMontantMax())==-0;
 
-            System.out.println("Date Filter :"+dateFilter);
-            System.out.println("Max :"+montantMaxFilter);
-            System.out.println("Min :"+montantMinFilter);
+
             if(montantMaxFilter  && montantMinFilter){
                 virmentMultiples.add((VirmentMultiple) virment);
             }
@@ -113,9 +111,9 @@ public class CustomController {
         return new ResponseEntity<>(virementForm,HttpStatus.OK);
     }
 
-    @PostMapping("/modifier-virement")
-    public ResponseEntity<Long> modifierVirement(@RequestBody VirementForm requestBody){
-        VirmentMultiple virmentMultiple = virmentMultipleRepository.findById(requestBody.getId()).get();
+    @PostMapping("/modifier-virement/{id}")
+    public ResponseEntity<Long> modifierVirement(@PathVariable(value = "id") Long id,@RequestBody VirementForm requestBody){
+        VirmentMultiple virmentMultiple = virmentMultipleRepository.findById(id).get();
         if(virmentMultiple == null){
             throw new ResponseStatusException(
                     HttpStatus.NOT_FOUND, "Didn't found this virement"
@@ -137,7 +135,9 @@ public class CustomController {
             beneficiaires.add(virmentMultipleBeneficiaire);
         });
 
+        virmentMultiple.setMontant(requestBody.getMontant());
         virmentMultiple.setVirmentMultipleBeneficiaires(beneficiaires);
+        System.out.println(virmentMultiple.getMontant());
         return new ResponseEntity<>(virmentMultiple.getId(),HttpStatus.OK);
     }
     @PostMapping("/ajouter-virement")
