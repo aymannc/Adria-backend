@@ -56,7 +56,8 @@ public class DummyInitializer implements Initializer {
         VirmentMultiple virmentMultiple = new VirmentMultiple(1, null);
         virmentMultiple.setAbonne(abonne2);
         virmentMultiple.setCompte(compte);
-        virmentMultiple.setDateExcecution(new Date());
+        virmentMultiple.setDateExcecution(null);
+        virmentMultiple.setStatut("Enregistré");
         virmentMultiple.setMontant(new BigDecimal(1000));
         virmentMultiple.setMotif("Motif");
         virmentMultiple = virmentMultipleRepository.save(virmentMultiple);

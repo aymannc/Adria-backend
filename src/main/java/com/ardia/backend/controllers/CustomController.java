@@ -104,6 +104,8 @@ public class CustomController {
         List<SelectedBeneficiaire> beneficiaires = new ArrayList<>();
         virmentMultiple.getVirmentMultipleBeneficiaires().forEach(b -> {
             SelectedBeneficiaire selectedBeneficiaire = new SelectedBeneficiaire();
+            selectedBeneficiaire.setNom(b.getBeneficiaire().getNom());
+            selectedBeneficiaire.setPrenom(b.getBeneficiaire().getPrenom());
             selectedBeneficiaire.setId(b.getBeneficiaire().getId());
             selectedBeneficiaire.setMontant(b.getMontant().toString());
             beneficiaires.add(selectedBeneficiaire);
@@ -139,7 +141,6 @@ public class CustomController {
 
         virmentMultiple.setMontant(requestBody.getMontant());
         virmentMultiple.setVirmentMultipleBeneficiaires(beneficiaires);
-        System.out.println(virmentMultiple.getMontant());
         return new ResponseEntity<>(virmentMultiple.getId(), HttpStatus.OK);
     }
 
@@ -160,6 +161,7 @@ public class CustomController {
         virmentMultiple.setMotif(requestBody.getMotif());
         virmentMultiple.setMontant(requestBody.getMontant());
         virmentMultiple.setDateExcecution(null);
+        virmentMultiple.setStatut("Enregisté");
         virmentMultiple.setAbonne(abonne);
         virmentMultiple.setCompte(compte);
         virmentMultiple.setNombreBeneficiaires(requestBody.getNbrOfBenf());
@@ -216,6 +218,7 @@ public class CustomController {
                     HttpStatus.NOT_ACCEPTABLE, "You don't have enough funds for this operation!"
             );
         }
+        virment.setStatut("Enregistré et signé");
         virment.setDateExcecution(new Date());
         virmentMultipleRepository.save(virment);
         compte.setSoldeComptable(newBalance);
@@ -263,6 +266,8 @@ class VirementForm {
 
 @Data
 class SelectedBeneficiaire {
+    private String nom;
+    private String prenom;
     private String montant;
     private long id;
 }

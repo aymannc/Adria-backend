@@ -24,6 +24,7 @@ public class Virment {
     private Date dateExcecution;
     private BigDecimal montant;
     private String motif;
+    private String statut;
 
     @ManyToOne
     private Abonne abonne;

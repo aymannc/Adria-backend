@@ -15,6 +15,7 @@ public interface VirementMultipleProjection {
     public Date getDateCreation();
     public Date getDateExcecution();
     public BigDecimal getMontant();
+    public String getStatut();
     public String getMotif();
     public Compte getCompte();
     public Abonne getAbonne();
