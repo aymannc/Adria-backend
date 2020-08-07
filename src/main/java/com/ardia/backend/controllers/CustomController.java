@@ -197,7 +197,7 @@ public class CustomController {
                     HttpStatus.BAD_REQUEST, "This virement already singed "
             );
         }
-        Abonne abonne = abonneRepository.findByUsername(form.getUsername());
+        Abonne abonne = abonneRepository.findById(form.getId()).orElse(null);
         if (abonne == null) {
             throw new ResponseStatusException(
                     HttpStatus.NOT_FOUND, "Didn't found this user"
@@ -242,7 +242,7 @@ class FiltringForm {
 @NoArgsConstructor
 @ToString
 class SignForm {
-    private String username;
+    private Long id;
     private String password;
     private Long virmentID;
 }
