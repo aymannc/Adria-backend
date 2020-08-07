@@ -1,4 +1,4 @@
-package com.ardia.backend.securite;
+package com.ardia.backend.security;
 
 public class SecurityConstants {
     public static final String SECRET ="Secret";

@@ -1,9 +1,11 @@
-package com.ardia.backend.securite;
+package com.ardia.backend.security;
 
 import com.ardia.backend.entities.Abonne;
+import com.ardia.backend.repositories.AbonneRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
+import org.springframework.context.ApplicationContext;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -20,10 +22,14 @@ import java.util.Date;
 
 public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilter {
 
+
+    AbonneRepository abonneRepository;
+
     private AuthenticationManager authenticationManager;
 
-    public JWTAuthenticationFilter(AuthenticationManager authenticationManager) {
+    public JWTAuthenticationFilter(AuthenticationManager authenticationManager, ApplicationContext ctx) {
         this.authenticationManager = authenticationManager;
+        this.abonneRepository = ctx.getBean(AbonneRepository.class);
     }
 
     @Override
@@ -31,7 +37,7 @@ public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilte
         Abonne user = null;
 
         try {
-            user = new ObjectMapper().readValue(request.getInputStream(),Abonne.class);
+            user = new ObjectMapper().readValue(request.getInputStream(), Abonne.class);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -47,12 +53,15 @@ public class JWTAuthenticationFilter extends UsernamePasswordAuthenticationFilte
     @Override
     protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response, FilterChain chain, Authentication authResult) throws IOException, ServletException {
         User user = (User) authResult.getPrincipal();
+        Abonne abonne = abonneRepository.findByUsername(user.getUsername());
         String jwtToken = Jwts.builder()
-                .setSubject(user.getUsername())
-                .setExpiration(new Date(System.currentTimeMillis()+SecurityConstants.EXPERATION_TIME))
-                .signWith(SignatureAlgorithm.HS512,SecurityConstants.SECRET)
-                .claim("roles",user.getAuthorities())
+                .setSubject(abonne.getId().toString())
+                .setExpiration(new Date(System.currentTimeMillis() + SecurityConstants.EXPERATION_TIME))
+                .signWith(SignatureAlgorithm.HS512, SecurityConstants.SECRET)
+                .claim("roles", user.getAuthorities())
                 .compact();
-        response.addHeader(SecurityConstants.HEADER_STRING,SecurityConstants.TOKEN_PREFIX+jwtToken);
+
+        response.addHeader(SecurityConstants.HEADER_STRING, SecurityConstants.TOKEN_PREFIX + jwtToken);
+//        response.addHeader("UserID", abonne.getId().toString());
     }
 }

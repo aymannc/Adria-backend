@@ -11,14 +11,14 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.server.ResponseStatusException;
 
 import javax.transaction.Transactional;
 import java.math.BigDecimal;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -42,9 +42,9 @@ public class CustomController {
 
 
     @PostMapping("/filter-virement")
-    public ResponseEntity<List<VirmentMultiple>> filterVirement(@RequestBody FiltringForm filtringForm){
+    public ResponseEntity<List<VirmentMultiple>> filterVirement(@RequestBody FiltringForm filtringForm) {
         Compte compte = compteRepository.findById(filtringForm.getCompteNumero()).get();
-        if(compte == null){
+        if (compte == null) {
             throw new ResponseStatusException(
                     HttpStatus.NOT_FOUND, "Didn't found this compte"
             );
@@ -54,41 +54,43 @@ public class CustomController {
         compte.getVirments().forEach(virment -> {
 
             boolean dateFilter = false || filtringForm.getDateExecution().equals("");
-            boolean montantMaxFilter =false;
+            boolean montantMaxFilter = false;
             boolean montantMinFilter = false;
 
-            if(virment.getDateExcecution() != null && !filtringForm.getDateExecution().equals("")){
+            if (virment.getDateExcecution() != null && !filtringForm.getDateExecution().equals("")) {
                 dateFilter = filtringForm.getDateExecution().equals(virment.getDateExcecution().toString().split(" ")[0]);
             }
-            montantMaxFilter = virment.getMontant().compareTo(filtringForm.getMontantMax())==-1 || virment.getMontant().compareTo(filtringForm.getMontantMax())==-0;
-            montantMinFilter = virment.getMontant().compareTo(filtringForm.getMontantMin())==1 || virment.getMontant().compareTo(filtringForm.getMontantMax())==-0;
+            montantMaxFilter = virment.getMontant().compareTo(filtringForm.getMontantMax()) == -1 || virment.getMontant().compareTo(filtringForm.getMontantMax()) == -0;
+            montantMinFilter = virment.getMontant().compareTo(filtringForm.getMontantMin()) == 1 || virment.getMontant().compareTo(filtringForm.getMontantMax()) == -0;
 
 
-            if(montantMaxFilter  && montantMinFilter){
+            if (montantMaxFilter && montantMinFilter) {
                 virmentMultiples.add((VirmentMultiple) virment);
             }
         });
 
-        return new ResponseEntity<>(virmentMultiples,HttpStatus.OK);
+        return new ResponseEntity<>(virmentMultiples, HttpStatus.OK);
     }
+
     @PostMapping("/delete-virement/{id}")
-    public ResponseEntity<Long> deleteVirment(@PathVariable(value = "id")Long id){
+    public ResponseEntity<Long> deleteVirment(@PathVariable(value = "id") Long id) {
         VirmentMultiple virmentMultiple = virmentMultipleRepository.findById(id).get();
-        if(virmentMultiple == null){
+        if (virmentMultiple == null) {
             throw new ResponseStatusException(
                     HttpStatus.NOT_FOUND, "Didn't found this virement"
             );
         }
-        virmentMultiple.getVirmentMultipleBeneficiaires().forEach(b->{
+        virmentMultiple.getVirmentMultipleBeneficiaires().forEach(b -> {
             virmentMultipleBeneficiaireRepository.delete(b);
         });
         virmentMultipleRepository.delete(virmentMultiple);
-        return  new ResponseEntity<>(virmentMultiple.getId(),HttpStatus.OK);
+        return new ResponseEntity<>(virmentMultiple.getId(), HttpStatus.OK);
     }
+
     @GetMapping("/get-virement/{id}")
-    public ResponseEntity<VirementForm> getVirement(@PathVariable(value = "id")Long id){
+    public ResponseEntity<VirementForm> getVirement(@PathVariable(value = "id") Long id) {
         VirmentMultiple virmentMultiple = virmentMultipleRepository.findById(id).get();
-        if(virmentMultiple == null){
+        if (virmentMultiple == null) {
             throw new ResponseStatusException(
                     HttpStatus.NOT_FOUND, "Didn't found this virement"
             );
@@ -100,7 +102,7 @@ public class CustomController {
         virementForm.setMontant(virmentMultiple.getMontant());
         virementForm.setNbrOfBenf(virmentMultiple.getNombreBeneficiaires());
         List<SelectedBeneficiaire> beneficiaires = new ArrayList<>();
-        virmentMultiple.getVirmentMultipleBeneficiaires().forEach(b ->{
+        virmentMultiple.getVirmentMultipleBeneficiaires().forEach(b -> {
             SelectedBeneficiaire selectedBeneficiaire = new SelectedBeneficiaire();
             selectedBeneficiaire.setId(b.getBeneficiaire().getId());
             selectedBeneficiaire.setMontant(b.getMontant().toString());
@@ -108,13 +110,13 @@ public class CustomController {
         });
         virementForm.setSelectedBeneficiaire(beneficiaires);
         virementForm.setCreatedDate(virmentMultiple.getDateCreation());
-        return new ResponseEntity<>(virementForm,HttpStatus.OK);
+        return new ResponseEntity<>(virementForm, HttpStatus.OK);
     }
 
     @PostMapping("/modifier-virement/{id}")
-    public ResponseEntity<Long> modifierVirement(@PathVariable(value = "id") Long id,@RequestBody VirementForm requestBody){
+    public ResponseEntity<Long> modifierVirement(@PathVariable(value = "id") Long id, @RequestBody VirementForm requestBody) {
         VirmentMultiple virmentMultiple = virmentMultipleRepository.findById(id).get();
-        if(virmentMultiple == null){
+        if (virmentMultiple == null) {
             throw new ResponseStatusException(
                     HttpStatus.NOT_FOUND, "Didn't found this virement"
             );
@@ -122,7 +124,7 @@ public class CustomController {
         virmentMultiple.setCompte(compteRepository.findByNumeroCompte(requestBody.getAccountNumber()));
         virmentMultiple.setNombreBeneficiaires(requestBody.getNbrOfBenf());
         virmentMultiple.setMotif(requestBody.getMotif());
-        virmentMultiple.getVirmentMultipleBeneficiaires().forEach(b ->{
+        virmentMultiple.getVirmentMultipleBeneficiaires().forEach(b -> {
             virmentMultipleBeneficiaireRepository.delete(b);
         });
         List<VirmentMultipleBeneficiaire> beneficiaires = new ArrayList<>();
@@ -138,8 +140,9 @@ public class CustomController {
         virmentMultiple.setMontant(requestBody.getMontant());
         virmentMultiple.setVirmentMultipleBeneficiaires(beneficiaires);
         System.out.println(virmentMultiple.getMontant());
-        return new ResponseEntity<>(virmentMultiple.getId(),HttpStatus.OK);
+        return new ResponseEntity<>(virmentMultiple.getId(), HttpStatus.OK);
     }
+
     @PostMapping("/ajouter-virement")
     public ResponseEntity<Long> createUser(@RequestBody VirementForm requestBody) {
 
@@ -182,7 +185,6 @@ public class CustomController {
 
     @PostMapping("/sign")
     public ResponseEntity<Boolean> signVirement(@RequestBody SignForm form) throws ResponseStatusException {
-        System.out.println(form);
         VirmentMultiple virment = virmentMultipleRepository.findById(form.getVirmentID())
                 .orElse(null);
         if (virment == null) {
@@ -207,8 +209,17 @@ public class CustomController {
                     HttpStatus.UNAUTHORIZED, "Password didn't match"
             );
         }
+        Compte compte = virment.getCompte();
+        BigDecimal newBalance = compte.getSoldeComptable().subtract(virment.getMontant());
+        if (newBalance.compareTo(BigDecimal.ZERO) == -1) {
+            throw new ResponseStatusException(
+                    HttpStatus.NOT_ACCEPTABLE, "You don't have enough funds for this operation!"
+            );
+        }
         virment.setDateExcecution(new Date());
-        virmentMultipleRepository.save(virment).getId();
+        virmentMultipleRepository.save(virment);
+        compte.setSoldeComptable(newBalance);
+        compteRepository.save(compte);
         return new ResponseEntity<>(true, HttpStatus.OK);
     }
 }
@@ -218,13 +229,14 @@ public class CustomController {
 @AllArgsConstructor
 @NoArgsConstructor
 @ToString
-class FiltringForm{
+class FiltringForm {
     private Long compteNumero;
     private String dateExecution;
     private BigDecimal montantMax;
     private BigDecimal montantMin;
     private String statut;
 }
+
 @Data
 @AllArgsConstructor
 @NoArgsConstructor

@@ -1,4 +1,4 @@
-package com.ardia.backend.securite;
+package com.ardia.backend.security;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
