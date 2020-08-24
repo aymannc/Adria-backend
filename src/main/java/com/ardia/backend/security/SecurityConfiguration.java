@@ -31,6 +31,7 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
         //Customize the authentication process and using the BCryptPasswordEncoder for passwords
         auth.userDetailsService(userDetailsService)
                 .passwordEncoder(bCryptPasswordEncoder);
+        
     }
 
     @Override

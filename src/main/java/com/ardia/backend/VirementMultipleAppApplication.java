@@ -30,6 +30,6 @@ public class VirementMultipleAppApplication implements CommandLineRunner {
     @Override
     public void run(String... args) {
         repositoryRestConfiguration.exposeIdsFor(Beneficiaire.class, Compte.class);
-        dummyInitializer.initAllData();
+//        dummyInitializer.initAllData();
     }
 }

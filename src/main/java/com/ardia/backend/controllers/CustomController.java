@@ -75,11 +75,18 @@ public class CustomController {
     @PostMapping("/delete-virement/{id}")
     public ResponseEntity<Long> deleteVirment(@PathVariable(value = "id") Long id) {
         VirmentMultiple virmentMultiple = virmentMultipleRepository.findById(id).get();
+
         if (virmentMultiple == null) {
             throw new ResponseStatusException(
                     HttpStatus.NOT_FOUND, "Didn't found this virement"
             );
         }
+        if(virmentMultiple.getDateExcecution() != null){
+            throw new ResponseStatusException(
+                    HttpStatus.NOT_FOUND, "Can't delete an executed virement !"
+            );
+        }
+
         virmentMultiple.getVirmentMultipleBeneficiaires().forEach(b -> {
             virmentMultipleBeneficiaireRepository.delete(b);
         });
@@ -187,6 +194,7 @@ public class CustomController {
 
     @PostMapping("/sign")
     public ResponseEntity<Boolean> signVirement(@RequestBody SignForm form) throws ResponseStatusException {
+        System.out.println(form);
         VirmentMultiple virment = virmentMultipleRepository.findById(form.getVirmentID())
                 .orElse(null);
         if (virment == null) {
@@ -205,12 +213,16 @@ public class CustomController {
                     HttpStatus.NOT_FOUND, "Didn't found this user"
             );
         }
-        boolean didMatch = passwordEncoder.matches(form.getPassword(), abonne.getPassword());
-        if (!didMatch) {
-            throw new ResponseStatusException(
-                    HttpStatus.UNAUTHORIZED, "Password didn't match"
-            );
+        if(form.getPasswordMode())
+        {
+            boolean didMatch = passwordEncoder.matches(form.getPassword(), abonne.getPassword());
+            if (!didMatch) {
+                throw new ResponseStatusException(
+                        HttpStatus.UNAUTHORIZED, "Password didn't match"
+                );
+            }
         }
+
         Compte compte = virment.getCompte();
         BigDecimal newBalance = compte.getSoldeComptable().subtract(virment.getMontant());
         if (newBalance.compareTo(BigDecimal.ZERO) == -1) {
@@ -248,6 +260,7 @@ class SignForm {
     private Long id;
     private String password;
     private Long virmentID;
+    private Boolean passwordMode;
 }
 
 @Data

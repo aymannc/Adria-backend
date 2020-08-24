@@ -7,7 +7,6 @@ import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 @Service
@@ -28,13 +27,16 @@ public class DummyInitializer implements Initializer {
     @Override
     public void initAllData() {
         Abonne abonne1 = accountService.saveUser(
-                new Abonne(null, "anc", "1234", "Nait", "Ayman", null,
+                new Abonne(null, "nait_cherif", "1234", "Nait", "Ayman", null,
                         null));
         Abonne abonne2 = accountService.saveUser(
-                new Abonne(null, "med", "1234", "ouftou", "mohmad", null,
+                new Abonne(null, "ouftou", "1234", "ouftou", "mohmad", null,
                         null));
         Abonne abonne3 = accountService.saveUser(
-                new Abonne(null, "user", "1234", "Chtaiba", "kk", null,
+                new Abonne(null, "oulahyane", "1234", "Oulahyane", "Kaoutar", null,
+                        null));
+        Abonne abonne4 = accountService.saveUser(
+                new Abonne(null, "sabar", "1234", "Sabar", "Laila", null,
                         null));
 
         compteRepository.save(
@@ -42,16 +44,16 @@ public class DummyInitializer implements Initializer {
         Compte compte = new Compte(null, "435632", "Mr", new BigDecimal("10000"), abonne1, null);
         compteRepository.save(
                 compte);
-        compteRepository.save(new Compte(null, "3980874", "Mr", new BigDecimal("-10"), abonne3, null));
+        compteRepository.save(new Compte(null, "3980874", "Mr", new BigDecimal("-10"), abonne2, null));
 
         List<Beneficiaire> beneficiairesList = new ArrayList<>();
 
         beneficiairesList.add(
-                new Beneficiaire(null, "Nait Cherif", "Ayman", 1, null)
+                new Beneficiaire(null, "Ouftou", "Mohamed", 3, null)
         );
         beneficiairesList = beneficiaireRepository.saveAll(beneficiairesList);
-        abonne2.setBeneficiaires(beneficiairesList);
-        accountService.saveUser(abonne2);
+        abonne1.setBeneficiaires(beneficiairesList);
+        accountService.saveUser(abonne1);
 
         VirmentMultiple virmentMultiple = new VirmentMultiple(1, null);
         virmentMultiple.setAbonne(abonne2);
